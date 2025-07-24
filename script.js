@@ -1,9 +1,8 @@
 // Scene navigation logic using D3.js
-const totalScenes = 5;
-let currentScene = 1;
+const totalSteps = 15;
+let currentStep = 1;
 
-function showScene(sceneNum) {
-    // Select template areas
+function showStep(stepNum) {
     const titleArea = d3.select('#scene-title');
     const vizArea = d3.select('#scene-viz');
     const annotationArea = d3.select('#scene-annotation');
@@ -12,51 +11,98 @@ function showScene(sceneNum) {
     vizArea.html('');
     annotationArea.html('');
 
-    if (sceneNum === 1) {
-        titleArea.text('Work Life Balance vs Social Isolation');
-        drawScatterPlotWithAnnotations(vizArea, annotationArea);
-    } else if (sceneNum === 2) {
-        titleArea.text('Work Life Balance vs Social Isolation (Colored by Gender)');
-        drawScatterPlotByGender(vizArea, annotationArea);
-    } else if (sceneNum === 3) {
-        titleArea.text('Work Life Balance vs Social Isolation (Colored by Age)');
-        drawScatterPlotByAge(vizArea, annotationArea);
-    } else if (sceneNum === 4) {
-        titleArea.text('Work Life Balance vs Social Isolation (Colored by Hours per Week)');
-        drawScatterPlotByHours(vizArea, annotationArea);
-    } else if (sceneNum === 5) {
-        titleArea.text('Explore: Work Life Balance vs Social Isolation (Jittered, Filterable)');
-        drawJitteredScatterplot(vizArea, annotationArea);
-    } else if (sceneNum === 6) {
-        titleArea.text('Data Overview');
-        vizArea.append('svg').attr('width', 200).attr('height', 100)
-            .append('circle')
-            .attr('cx', 100).attr('cy', 50).attr('r', 40)
-            .attr('fill', 'steelblue');
-        annotationArea.text('Here we explore the dataset structure and key insights.');
-    } else if (sceneNum === 7) {
-        titleArea.text('Detailed Analysis');
-        vizArea.append('svg').attr('width', 200).attr('height', 100)
-            .append('rect')
-            .attr('x', 50).attr('y', 20).attr('width', 100).attr('height', 60)
-            .attr('fill', 'orange');
-        annotationArea.text('Dive deeper into the patterns and relationships in the data.');
+    switch (stepNum) {
+        case 1:
+            titleArea.text('Work Life Balance vs Social Isolation');
+            drawScatterPlotWithAnnotations(vizArea, annotationArea, 1);
+            annotationArea.html('Each circle represents a group of people with the same work-life balance and social isolation scores. Circle size shows how many people are in that group, and color shows the average of a third variable (ex. income, blue = lower, red = higher). You can hover over each circle for more details.');
+            break;
+        case 2:
+            titleArea.text('Work Life Balance vs Social Isolation');
+            drawScatterPlotWithAnnotations(vizArea, annotationArea, 2);
+            annotationArea.html('Average income shows little variation across work-life balance and social isolation levels. This suggests that compensation may not be directly linked to well-being in hybrid work environments.');
+            break;
+        case 3:
+            titleArea.text('Work Life Balance vs Social Isolation');
+            drawScatterPlotWithAnnotations(vizArea, annotationArea, 3);
+            // The annotation for this step is drawn as an SVG callout in the plot function
+            break;
+        case 4:
+            titleArea.text('Work Life Balance vs Social Isolation');
+            drawScatterPlotWithAnnotations(vizArea, annotationArea, 4);
+            annotationArea.html('Step 4 annotation here.');
+            break;
+        case 5:
+            titleArea.text('Work Life Balance vs Social Isolation');
+            drawScatterPlotWithAnnotations(vizArea, annotationArea, 5);
+            annotationArea.html('Step 5 annotation here.');
+            break;
+        case 6:
+            titleArea.text('Work Life Balance vs Social Isolation (Colored by Gender)');
+            drawScatterPlotByGender(vizArea, annotationArea, 1);
+            annotationArea.html('Each circle represents a group of people with the same work-life balance and social isolation scores. Circle size shows how many people are in that group, and color shows the proportion of males (red) to females (blue) in the group.');
+            break;
+        case 7:
+            titleArea.text('Work Life Balance vs Social Isolation (Colored by Gender)');
+            drawScatterPlotByGender(vizArea, annotationArea, 2);
+            annotationArea.html('Step 7 annotation here.');
+            break;
+        case 8:
+            titleArea.text('Work Life Balance vs Social Isolation (Colored by Gender)');
+            drawScatterPlotByGender(vizArea, annotationArea, 3);
+            annotationArea.html('Step 8 annotation here.');
+            break;
+        case 9:
+            titleArea.text('Work Life Balance vs Social Isolation (Colored by Gender)');
+            drawScatterPlotByGender(vizArea, annotationArea, 4);
+            annotationArea.html('Step 9 annotation here.');
+            break;
+        case 10:
+            titleArea.text('Work Life Balance vs Social Isolation (Colored by Age)');
+            drawScatterPlotByAge(vizArea, annotationArea, 1);
+            annotationArea.html('Each circle represents a group of people with the same work-life balance and social isolation scores. Circle size shows how many people are in that group, and color shows their average age (blue = younger, red = older).');
+            break;
+        case 11:
+            titleArea.text('Work Life Balance vs Social Isolation (Colored by Age)');
+            drawScatterPlotByAge(vizArea, annotationArea, 2);
+            annotationArea.html('Step 11 annotation here.');
+            break;
+        case 12:
+            titleArea.text('Work Life Balance vs Social Isolation (Colored by Age)');
+            drawScatterPlotByAge(vizArea, annotationArea, 3);
+            annotationArea.html('Step 12 annotation here.');
+            break;
+        case 13:
+            titleArea.text('Work Life Balance vs Social Isolation (Colored by Age)');
+            drawScatterPlotByAge(vizArea, annotationArea, 4);
+            annotationArea.html('Step 13 annotation here.');
+            break;
+        case 14:
+            titleArea.text('Work Life Balance vs Social Isolation (Colored by Hours per Week)');
+            drawScatterPlotByHours(vizArea, annotationArea, 1);
+            annotationArea.html('Each circle represents a group of people with the same work-life balance and social isolation scores. Circle size shows how many people are in that group, and color shows their average hours per week (blue = fewer, red = more).');
+            break;
+        case 15:
+            titleArea.text('Explore: Work Life Balance vs Social Isolation (Jittered, Filterable)');
+            drawJitteredScatterplot(vizArea, annotationArea);
+            break;
+        default:
+            break;
     }
-    // Enable/disable prev/next buttons
-    d3.select('#prev-btn').attr('disabled', sceneNum === 1 ? true : null);
-    d3.select('#next-btn').attr('disabled', sceneNum === totalScenes ? true : null);
+    d3.select('#prev-btn').attr('disabled', stepNum === 1 ? true : null);
+    d3.select('#next-btn').attr('disabled', stepNum === totalSteps ? true : null);
 }
 
 d3.select('#prev-btn').on('click', function() {
-    if (currentScene > 1) {
-        currentScene--;
-        showScene(currentScene);
+    if (currentStep > 1) {
+        currentStep--;
+        showStep(currentStep);
     }
 });
 d3.select('#next-btn').on('click', function() {
-    if (currentScene < totalScenes) {
-        currentScene++;
-        showScene(currentScene);
+    if (currentStep < totalSteps) {
+        currentStep++;
+        showStep(currentStep);
     }
 });
 
@@ -143,7 +189,7 @@ function drawStackedBarChart(container) {
 }
 
 // Add new function for Scene 1 scatterplot
-function drawScatterPlotWithAnnotations(container, annotationArea) {
+function drawScatterPlotWithAnnotations(container, annotationArea, step) {
     const svgWidth = 900;
     const svgHeight = 400;
     const margin = {top: 40, right: 30, bottom: 60, left: 60};
@@ -311,13 +357,127 @@ function drawScatterPlotWithAnnotations(container, annotationArea) {
             .attr('font-size', 12)
             .attr('font-weight', 'bold')
             .text('Avg. Income');
-        // Scene annotation text
-        annotationArea.html('<b>Annotation:</b> Each circle represents a group of people with the same work-life balance and social isolation scores. Circle size shows how many people are in that group, and color shows their average income (blue = lower, red = higher).');
+        // Top annotation/callout logic by sceneKey and step
+        let topText = '';
+        if (step === 1) {
+            topText = 'Each circle represents a group of people with the same work-life balance and social isolation scores. Circle size shows how many people are in that group, and color shows the average of a third variable (ex. income, blue = lower, red = higher). You can hover over each circle for more details.';
+        } else if (step === 2) {
+            topText = 'Average income shows little variation across work-life balance and social isolation levels. This suggests that compensation may not be directly linked to well-being in hybrid work environments.';
+        } else if (step === 3) {
+            const xScale = d3.scaleLinear().domain([0, 5]).range([0, width]);
+            const yScale = d3.scaleLinear().domain([0, 5]).range([height, 0]);
+            // Draw highlight circle
+            svg.append('circle')
+                .attr('cx', xScale(3))
+                .attr('cy', yScale(3))
+                .attr('r', 40)
+                .attr('stroke', 'orange')
+                .attr('fill', 'none')
+                .attr('stroke-width', 3);
+            // White box background for annotation
+            const boxX = xScale(3) + 85; // was +45, now +85 for more rightward shift
+            const boxY = yScale(3) - 28;
+            const boxWidth = 320;
+            const boxHeight = 70;
+            svg.append('rect')
+                .attr('x', boxX - 10)
+                .attr('y', boxY - 8)
+                .attr('width', boxWidth)
+                .attr('height', boxHeight)
+                .attr('fill', 'white')
+                .attr('stroke', 'orange')
+                .attr('stroke-width', 2)
+                .attr('rx', 8);
+            // Annotation text
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 12)
+                .attr('font-size', 16)
+                .attr('fill', 'orange')
+                .attr('font-weight', 'bold')
+                .text('3,3: Most responses cluster here');
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 32)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('→ Moderate balance, moderate isolation');
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 52)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('→ Avg. income in this group is around $83.6K');
+            annotationArea.html('Average income shows little variation across work-life balance and social isolation levels. This suggests that compensation may not be directly linked to well-being in hybrid work environments.');
+            return;
+        } else if (step === 4) {
+            // Draw highlight circle and annotation for (5,1)
+            const xScale = d3.scaleLinear().domain([0, 5]).range([0, width]);
+            const yScale = d3.scaleLinear().domain([0, 5]).range([height, 0]);
+            svg.append('circle')
+                .attr('cx', xScale(5))
+                .attr('cy', yScale(1))
+                .attr('r', 40)
+                .attr('stroke', 'orange')
+                .attr('fill', 'none')
+                .attr('stroke-width', 3);
+            // Calculate average income for (5,1)
+            const group = data.filter(d => d.Work_Life_Balance_Score === 5 && d.Social_Isolation_Score === 1);
+            let avgIncome = 0;
+            if (group.length > 0) {
+                avgIncome = group.reduce((sum, d) => sum + d.Salary_Num, 0) / group.length;
+            }
+            // White box background for annotation (to the left)
+            const boxWidth = 480;
+            const boxHeight = 90;
+            const boxX = xScale(5) - boxWidth - 40; // left of the bubble
+            const boxY = yScale(1) - 28;
+            svg.append('rect')
+                .attr('x', boxX - 10)
+                .attr('y', boxY - 8)
+                .attr('width', boxWidth)
+                .attr('height', boxHeight)
+                .attr('fill', 'white')
+                .attr('stroke', 'orange')
+                .attr('stroke-width', 2)
+                .attr('rx', 8);
+            // Annotation text
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 12)
+                .attr('font-size', 16)
+                .attr('fill', 'orange')
+                .attr('font-weight', 'bold')
+                .text('5,1 Ideal zone: High balance & low isolation');
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 32)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('→ Fewer respondents land here');
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 52)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('→ Possibly linked to hybrid work setups');
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 72)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('→ average income: $' + (avgIncome ? avgIncome.toFixed(0) : 'N/A') + 'K');
+            annotationArea.html('Average income shows little variation across work-life balance and social isolation levels. This suggests that compensation may not be directly linked to well-being in hybrid work environments.');
+            return;
+        } else if (step === 5) {
+            topText = 'Average income shows little variation across work-life balance and social isolation levels. This suggests that compensation may not be directly linked to well-being in hybrid work environments.';
+        }
+        annotationArea.html(topText);
     });
 }
 
 // Add new function for Scene 2 scatterplot by gender
-function drawScatterPlotByGender(container, annotationArea) {
+function drawScatterPlotByGender(container, annotationArea, step) {
     const svgWidth = 900;
     const svgHeight = 400;
     const margin = {top: 40, right: 30, bottom: 60, left: 60};
@@ -487,12 +647,22 @@ function drawScatterPlotByGender(container, annotationArea) {
             .attr('font-size', 12)
             .attr('font-weight', 'bold')
             .text('Avg. Gender');
-        // Scene annotation text
-        annotationArea.html('<b>Annotation:</b> Each circle represents a group of people with the same work-life balance and social isolation scores. Circle size shows how many people are in that group, and color shows the proportion of males (red) to females (blue) in the group.');
+        // Top annotation/callout logic by step
+        let topText = '';
+        if (step === 1) {
+            topText = 'Scene 2, Step 1 annotation.';
+        } else if (step === 2) {
+            topText = 'Scene 2, Step 2 annotation.';
+        } else if (step === 3) {
+            topText = 'Scene 2, Step 3 annotation.';
+        } else if (step === 4) {
+            topText = 'Scene 2, Step 4 annotation.';
+        }
+        annotationArea.html(topText);
     });
 }
 
-function drawScatterPlotByAge(container, annotationArea) {
+function drawScatterPlotByAge(container, annotationArea, step) {
     const svgWidth = 900;
     const svgHeight = 400;
     const margin = {top: 40, right: 30, bottom: 60, left: 60};
@@ -649,12 +819,22 @@ function drawScatterPlotByAge(container, annotationArea) {
             .attr('font-size', 12)
             .attr('font-weight', 'bold')
             .text('Avg. Age');
-        // Scene annotation text
-        annotationArea.html('<b>Annotation:</b> Each circle represents a group of people with the same work-life balance and social isolation scores. Circle size shows how many people are in that group, and color shows their average age (blue = younger, red = older).');
+        // Top annotation/callout logic by step
+        let topText = '';
+        if (step === 1) {
+            topText = 'Scene 3, Step 1 annotation.';
+        } else if (step === 2) {
+            topText = 'Scene 3, Step 2 annotation.';
+        } else if (step === 3) {
+            topText = 'Scene 3, Step 3 annotation.';
+        } else if (step === 4) {
+            topText = 'Scene 3, Step 4 annotation.';
+        }
+        annotationArea.html(topText);
     });
 }
 
-function drawScatterPlotByHours(container, annotationArea) {
+function drawScatterPlotByHours(container, annotationArea, step) {
     const svgWidth = 900;
     const svgHeight = 400;
     const margin = {top: 40, right: 30, bottom: 60, left: 60};
@@ -812,8 +992,12 @@ function drawScatterPlotByHours(container, annotationArea) {
             .attr('font-size', 12)
             .attr('font-weight', 'bold')
             .text('Avg. Hours/Week');
-        // Scene annotation text
-        annotationArea.html('<b>Annotation:</b> Each circle represents a group of people with the same work-life balance and social isolation scores. Circle size shows how many people are in that group, and color shows their average hours per week (blue = fewer, red = more).');
+        // Top annotation/callout logic by step
+        let topText = '';
+        if (step === 1) {
+            topText = 'Scene 4 annotation.';
+        }
+        annotationArea.html(topText);
     });
 }
 
@@ -990,9 +1174,9 @@ function drawJitteredScatterplot(container, annotationArea) {
             .attr('font-weight', 'bold')
             .text('Gender');
         // Scene annotation text
-        annotationArea.html('<b>Explore:</b> Each point is a participant, jittered to reduce overlap. Use the filters to explore by gender, region, age, income, and hours per week. Hover for details.');
+        annotationArea.html('Each point is a participant, jittered to reduce overlap. Use the filters to explore by gender, region, age, income, and hours per week. Hover for details.');
     });
 }
 
 // Initialize
-showScene(currentScene); 
+showStep(currentStep); 
