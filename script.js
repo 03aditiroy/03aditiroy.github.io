@@ -13,27 +13,27 @@ function showStep(stepNum) {
 
     switch (stepNum) {
         case 1:
-            titleArea.text('Work Life Balance vs Social Isolation');
+            titleArea.text('Work Life Balance vs Social Isolation, Colored by Income');
             drawScatterPlotWithAnnotations(vizArea, annotationArea, 1);
             annotationArea.html('Each circle represents a group of people with the same work-life balance and social isolation scores. Circle size shows how many people are in that group, and color shows the average of a third variable (ex. income, blue = lower, red = higher). You can hover over each circle for more details.');
             break;
         case 2:
-            titleArea.text('Work Life Balance vs Social Isolation');
+            titleArea.text('Work Life Balance vs Social Isolation, Colored by Income');
             drawScatterPlotWithAnnotations(vizArea, annotationArea, 2);
             annotationArea.html('Average income shows little variation across work-life balance and social isolation levels. This suggests that compensation may not be directly linked to well-being in hybrid work environments.');
             break;
         case 3:
-            titleArea.text('Work Life Balance vs Social Isolation');
+            titleArea.text('Work Life Balance vs Social Isolation, Colored by Income');
             drawScatterPlotWithAnnotations(vizArea, annotationArea, 3);
-            // The annotation for this step is drawn as an SVG callout in the plot function
+            annotationArea.html('Average income shows little variation across work-life balance and social isolation levels. This suggests that compensation may not be directly linked to well-being in hybrid work environments.');
             break;
         case 4:
-            titleArea.text('Work Life Balance vs Social Isolation');
+            titleArea.text('Work Life Balance vs Social Isolation, Colored by Income');
             drawScatterPlotWithAnnotations(vizArea, annotationArea, 4);
-            annotationArea.html('Step 4 annotation here.');
+            annotationArea.html('Average income shows little variation across work-life balance and social isolation levels. This suggests that compensation may not be directly linked to well-being in hybrid work environments.');
             break;
         case 5:
-            titleArea.text('Work Life Balance vs Social Isolation');
+            titleArea.text('Work Life Balance vs Social Isolation, Colored by Income');
             drawScatterPlotWithAnnotations(vizArea, annotationArea, 5);
             annotationArea.html('Step 5 annotation here.');
             break;
@@ -106,94 +106,12 @@ d3.select('#next-btn').on('click', function() {
     }
 });
 
-function drawStackedBarChart(container) {
-    const svgWidth = 700;
-    const svgHeight = 400;
-    const margin = {top: 40, right: 30, bottom: 60, left: 60};
-    const width = svgWidth - margin.left - margin.right;
-    const height = svgHeight - margin.top - margin.bottom;
-
-    const svg = container.append('svg')
-        .attr('width', svgWidth)
-        .attr('height', svgHeight)
-        .append('g')
-        .attr('transform', `translate(${margin.left},${margin.top})`);
-
-    d3.csv('post_pandemic_remote_work_health_impact_2025.csv').then(data => {
-        const regions = Array.from(new Set(data.map(d => d.Region)));
-        const arrangements = Array.from(new Set(data.map(d => d.Work_Arrangement)));
-        const counts = {};
-        regions.forEach(region => {
-            counts[region] = {};
-            arrangements.forEach(arr => { counts[region][arr] = 0; });
-        });
-        data.forEach(d => {
-            if (counts[d.Region] && counts[d.Region][d.Work_Arrangement] !== undefined) {
-                counts[d.Region][d.Work_Arrangement]++;
-            }
-        });
-        const stackedData = regions.map(region => {
-            const entry = {Region: region};
-            arrangements.forEach(arr => { entry[arr] = counts[region][arr]; });
-            return entry;
-        });
-        const stack = d3.stack().keys(arrangements);
-        const series = stack(stackedData);
-        const x = d3.scaleBand()
-            .domain(regions)
-            .range([0, width])
-            .padding(0.2);
-        const y = d3.scaleLinear()
-            .domain([0, d3.max(stackedData, d => d3.sum(arrangements, arr => d[arr]))])
-            .nice()
-            .range([height, 0]);
-        const color = d3.scaleOrdinal()
-            .domain(arrangements)
-            .range(d3.schemeSet2);
-        svg.selectAll('g.layer')
-            .data(series)
-            .join('g')
-            .attr('class', 'layer')
-            .attr('fill', d => color(d.key))
-            .selectAll('rect')
-            .data(d => d)
-            .join('rect')
-            .attr('x', d => x(d.data.Region))
-            .attr('y', d => y(d[1]))
-            .attr('height', d => y(d[0]) - y(d[1]))
-            .attr('width', x.bandwidth());
-        svg.append('g')
-            .attr('transform', `translate(0,${height})`)
-            .call(d3.axisBottom(x))
-            .selectAll('text')
-            .attr('transform', 'rotate(-30)')
-            .style('text-anchor', 'end');
-        svg.append('g')
-            .call(d3.axisLeft(y));
-        const legend = svg.append('g')
-            .attr('transform', `translate(${width - 100},0)`);
-        arrangements.forEach((arr, i) => {
-            legend.append('rect')
-                .attr('x', 0)
-                .attr('y', i * 22)
-                .attr('width', 18)
-                .attr('height', 18)
-                .attr('fill', color(arr));
-            legend.append('text')
-                .attr('x', 26)
-                .attr('y', i * 22 + 14)
-                .text(arr)
-                .attr('font-size', 14);
-        });
-    });
-}
-
-// Add new function for Scene 1 scatterplot
+// function for Scene 1 scatterplot by income
 function drawScatterPlotWithAnnotations(container, annotationArea, step) {
     const svgWidth = 900;
     const svgHeight = 400;
     const margin = {top: 40, right: 30, bottom: 60, left: 60};
-    const width = 700 - margin.left - margin.right; // keep plot area same, extra space for legend
+    const width = 700 - margin.left - margin.right; 
     const height = svgHeight - margin.top - margin.bottom;
 
     const svg = container.append('svg')
@@ -202,7 +120,6 @@ function drawScatterPlotWithAnnotations(container, annotationArea, step) {
         .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    // Helper to map salary range to numeric value
     function salaryToNum(s) {
         if (s.includes('40K-60K')) return 50;
         if (s.includes('60K-80K')) return 70;
@@ -213,7 +130,6 @@ function drawScatterPlotWithAnnotations(container, annotationArea, step) {
     }
 
     d3.csv('post_pandemic_remote_work_health_impact_2025.csv').then(data => {
-        // Parse numeric values
         data.forEach(d => {
             d.Work_Life_Balance_Score = +d.Work_Life_Balance_Score;
             d.Social_Isolation_Score = +d.Social_Isolation_Score;
@@ -377,7 +293,7 @@ function drawScatterPlotWithAnnotations(container, annotationArea, step) {
             // White box background for annotation
             const boxX = xScale(3) + 85; // was +45, now +85 for more rightward shift
             const boxY = yScale(3) - 28;
-            const boxWidth = 320;
+            const boxWidth = 275;
             const boxHeight = 70;
             svg.append('rect')
                 .attr('x', boxX - 10)
@@ -388,26 +304,24 @@ function drawScatterPlotWithAnnotations(container, annotationArea, step) {
                 .attr('stroke', 'orange')
                 .attr('stroke-width', 2)
                 .attr('rx', 8);
-            // Annotation text
             svg.append('text')
                 .attr('x', boxX)
                 .attr('y', boxY + 12)
-                .attr('font-size', 16)
+                .attr('font-size', 14)
                 .attr('fill', 'orange')
-                .attr('font-weight', 'bold')
-                .text('3,3: Most responses cluster here');
+                .text('Most responses, regardless of income, ');
             svg.append('text')
                 .attr('x', boxX)
                 .attr('y', boxY + 32)
                 .attr('font-size', 14)
                 .attr('fill', 'orange')
-                .text('→ Moderate balance, moderate isolation');
+                .text('cluster here with moderate balance');
             svg.append('text')
                 .attr('x', boxX)
                 .attr('y', boxY + 52)
                 .attr('font-size', 14)
                 .attr('fill', 'orange')
-                .text('→ Avg. income in this group is around $83.6K');
+                .text('and moderate isolation.');
             annotationArea.html('Average income shows little variation across work-life balance and social isolation levels. This suggests that compensation may not be directly linked to well-being in hybrid work environments.');
             return;
         } else if (step === 4) {
@@ -421,15 +335,9 @@ function drawScatterPlotWithAnnotations(container, annotationArea, step) {
                 .attr('stroke', 'orange')
                 .attr('fill', 'none')
                 .attr('stroke-width', 3);
-            // Calculate average income for (5,1)
-            const group = data.filter(d => d.Work_Life_Balance_Score === 5 && d.Social_Isolation_Score === 1);
-            let avgIncome = 0;
-            if (group.length > 0) {
-                avgIncome = group.reduce((sum, d) => sum + d.Salary_Num, 0) / group.length;
-            }
             // White box background for annotation (to the left)
-            const boxWidth = 480;
-            const boxHeight = 90;
+            const boxWidth = 350;
+            const boxHeight = 75;
             const boxX = xScale(5) - boxWidth - 40; // left of the bubble
             const boxY = yScale(1) - 28;
             svg.append('rect')
@@ -445,43 +353,79 @@ function drawScatterPlotWithAnnotations(container, annotationArea, step) {
             svg.append('text')
                 .attr('x', boxX)
                 .attr('y', boxY + 12)
-                .attr('font-size', 16)
+                .attr('font-size', 14)
                 .attr('fill', 'orange')
-                .attr('font-weight', 'bold')
-                .text('5,1 Ideal zone: High balance & low isolation');
+                .text('Fewer respondents land here in the ideal');
             svg.append('text')
                 .attr('x', boxX)
                 .attr('y', boxY + 32)
                 .attr('font-size', 14)
                 .attr('fill', 'orange')
-                .text('→ Fewer respondents land here');
+                .text('zone with high balance and low isolation. This could');
             svg.append('text')
                 .attr('x', boxX)
                 .attr('y', boxY + 52)
                 .attr('font-size', 14)
                 .attr('fill', 'orange')
-                .text('→ Possibly linked to hybrid work setups');
-            svg.append('text')
-                .attr('x', boxX)
-                .attr('y', boxY + 72)
-                .attr('font-size', 14)
-                .attr('fill', 'orange')
-                .text('→ average income: $' + (avgIncome ? avgIncome.toFixed(0) : 'N/A') + 'K');
+                .text('possibly be linked to hybrid work setups.');
             annotationArea.html('Average income shows little variation across work-life balance and social isolation levels. This suggests that compensation may not be directly linked to well-being in hybrid work environments.');
             return;
         } else if (step === 5) {
-            topText = 'Average income shows little variation across work-life balance and social isolation levels. This suggests that compensation may not be directly linked to well-being in hybrid work environments.';
+            const xScale = d3.scaleLinear().domain([0, 5]).range([0, width]);
+            const yScale = d3.scaleLinear().domain([0, 5]).range([height, 0]);
+            // Draw highlight circle
+            svg.append('circle')
+                .attr('cx', xScale(1))
+                .attr('cy', yScale(5))
+                .attr('r', 40)
+                .attr('stroke', 'orange')
+                .attr('fill', 'none')
+                .attr('stroke-width', 3);
+            // White box background for annotation
+            const boxX = xScale(1) + 85;
+            const boxY = yScale(5) - 28;
+            const boxWidth = 300;
+            const boxHeight = 70;
+            svg.append('rect')
+                .attr('x', boxX - 10)
+                .attr('y', boxY - 8)
+                .attr('width', boxWidth)
+                .attr('height', boxHeight)
+                .attr('fill', 'white')
+                .attr('stroke', 'orange')
+                .attr('stroke-width', 2)
+                .attr('rx', 8);
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 12)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('Few respondents lie in the red flag zone ');
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 32)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('with poor work life balance and high isolation. ');
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 52)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('Their average income is similar to others.');
+            annotationArea.html('Average income shows little variation across work-life balance and social isolation levels. This suggests that compensation may not be directly linked to well-being in hybrid work environments.');
+            return;
         }
         annotationArea.html(topText);
     });
 }
 
-// Add new function for Scene 2 scatterplot by gender
+// function for Scene 2 scatterplot by gender
 function drawScatterPlotByGender(container, annotationArea, step) {
     const svgWidth = 900;
     const svgHeight = 400;
     const margin = {top: 40, right: 30, bottom: 60, left: 60};
-    const width = 700 - margin.left - margin.right; // keep plot area same, extra space for legend
+    const width = 700 - margin.left - margin.right;
     const height = svgHeight - margin.top - margin.bottom;
 
     const svg = container.append('svg')
@@ -650,18 +594,173 @@ function drawScatterPlotByGender(container, annotationArea, step) {
         // Top annotation/callout logic by step
         let topText = '';
         if (step === 1) {
-            topText = 'Scene 2, Step 1 annotation.';
+            topText = 'Color shading shows little gender disparity in overall well-being. Both men and women appear similarly distributed across work-life balance and social isolation scores.';
         } else if (step === 2) {
-            topText = 'Scene 2, Step 2 annotation.';
+            const xScale = d3.scaleLinear().domain([0, 5]).range([0, width]);
+            const yScale = d3.scaleLinear().domain([0, 5]).range([height, 0]);
+            // Draw highlight circle
+            svg.append('circle')
+                .attr('cx', xScale(3))
+                .attr('cy', yScale(3))
+                .attr('r', 40)
+                .attr('stroke', 'orange')
+                .attr('fill', 'none')
+                .attr('stroke-width', 3);
+            // White box background for annotation
+            const boxX = xScale(3) + 70;
+            const boxY = yScale(3) - 28;
+            const boxWidth = 275;
+            const boxHeight = 110;
+            svg.append('rect')
+                .attr('x', boxX - 10)
+                .attr('y', boxY - 8)
+                .attr('width', boxWidth)
+                .attr('height', boxHeight)
+                .attr('fill', 'white')
+                .attr('stroke', 'orange')
+                .attr('stroke-width', 2)
+                .attr('rx', 8);
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 12)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('Most responses, regardless of gender, ');
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 32)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('report a work-life balance score of 3 and');
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 52)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('moderate social isolation. This suggests a ,');
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 72)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('shared middle-ground experience post-');
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 92)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('pandemic.');
+            annotationArea.html('Color shading shows little gender disparity in overall well-being. Both men and women appear similarly distributed across work-life balance and social isolation scores.');
+            return;
         } else if (step === 3) {
-            topText = 'Scene 2, Step 3 annotation.';
+            const xScale = d3.scaleLinear().domain([0, 5]).range([0, width]);
+            const yScale = d3.scaleLinear().domain([0, 5]).range([height, 0]);
+            // Draw highlight circle
+            svg.append('circle')
+                .attr('cx', xScale(1))
+                .attr('cy', yScale(5))
+                .attr('r', 40)
+                .attr('stroke', 'orange')
+                .attr('fill', 'none')
+                .attr('stroke-width', 3);
+            // White box background for annotation
+            const boxX = xScale(1) + 70;
+            const boxY = yScale(5) - 28;
+            const boxWidth = 275;
+            const boxHeight = 90;
+            svg.append('rect')
+                .attr('x', boxX - 10)
+                .attr('y', boxY - 8)
+                .attr('width', boxWidth)
+                .attr('height', boxHeight)
+                .attr('fill', 'white')
+                .attr('stroke', 'orange')
+                .attr('stroke-width', 2)
+                .attr('rx', 8);
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 12)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('Smaller clusters in the upper left show');
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 32)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('fewer respondents facing both low work-');
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 52)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('life balance and high social isolation —');
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 72)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('no strong gender trend here.');
+            annotationArea.html('Color shading shows little gender disparity in overall well-being. Both men and women appear similarly distributed across work-life balance and social isolation scores.');
+            return;
         } else if (step === 4) {
-            topText = 'Scene 2, Step 4 annotation.';
-        }
+            // Draw highlight circle and annotation for (5,1)
+            const xScale = d3.scaleLinear().domain([0, 5]).range([0, width]);
+            const yScale = d3.scaleLinear().domain([0, 5]).range([height, 0]);
+            svg.append('circle')
+                .attr('cx', xScale(5))
+                .attr('cy', yScale(1))
+                .attr('r', 40)
+                .attr('stroke', 'orange')
+                .attr('fill', 'none')
+                .attr('stroke-width', 3);
+            // White box background for annotation (to the left)
+            const boxWidth = 350;
+            const boxHeight = 90;
+            const boxX = xScale(5) - boxWidth - 40; // left of the bubble
+            const boxY = yScale(1) - 28;
+            svg.append('rect')
+                .attr('x', boxX - 10)
+                .attr('y', boxY - 8)
+                .attr('width', boxWidth)
+                .attr('height', boxHeight)
+                .attr('fill', 'white')
+                .attr('stroke', 'orange')
+                .attr('stroke-width', 2)
+                .attr('rx', 8);
+            // Annotation text
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 12)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('The lower-right bubbles suggest a segment of workers');
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 32)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('with excellent balance and minimal isolation. Gender');
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 52)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('distribution here is also mixed, indicating both men ');
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 72)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('and women experience this positively.');
+                annotationArea.html('Color shading shows little gender disparity in overall well-being. Both men and women appear similarly distributed across work-life balance and social isolation scores.');
+            return;
+        } 
         annotationArea.html(topText);
     });
 }
 
+// function for Scene 3 scatterplot by age
 function drawScatterPlotByAge(container, annotationArea, step) {
     const svgWidth = 900;
     const svgHeight = 400;
@@ -822,13 +921,142 @@ function drawScatterPlotByAge(container, annotationArea, step) {
         // Top annotation/callout logic by step
         let topText = '';
         if (step === 1) {
-            topText = 'Scene 3, Step 1 annotation.';
+            topText = 'Most responses are centered around moderate scores (3,3). There is a slight age-related trend — older respondents cluster more at low work-life balance or high isolation extremes.';
         } else if (step === 2) {
-            topText = 'Scene 3, Step 2 annotation.';
+            const xScale = d3.scaleLinear().domain([0, 5]).range([0, width]);
+            const yScale = d3.scaleLinear().domain([0, 5]).range([height, 0]);
+            // Draw highlight circle
+            svg.append('circle')
+                .attr('cx', xScale(2))
+                .attr('cy', yScale(1))
+                .attr('r', 40)
+                .attr('stroke', 'orange')
+                .attr('fill', 'none')
+                .attr('stroke-width', 3);
+            // White box background for annotation
+            const boxX = xScale(2) + 70;
+            const boxY = yScale(1) - 28;
+            const boxWidth = 290;
+            const boxHeight = 75;
+            svg.append('rect')
+                .attr('x', boxX - 10)
+                .attr('y', boxY - 8)
+                .attr('width', boxWidth)
+                .attr('height', boxHeight)
+                .attr('fill', 'white')
+                .attr('stroke', 'orange')
+                .attr('stroke-width', 2)
+                .attr('rx', 8);
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 12)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('Some older workers report low isolation even');
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 32)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('with poor balance — possibly due to more');
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 52)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('established support systems or routines.');
+            annotationArea.html('Most responses are centered around moderate scores (3,3). There is a slight age-related trend — older respondents cluster more at low work-life balance or high isolation extremes.');
+            return;
         } else if (step === 3) {
-            topText = 'Scene 3, Step 3 annotation.';
+            const xScale = d3.scaleLinear().domain([0, 5]).range([0, width]);
+            const yScale = d3.scaleLinear().domain([0, 5]).range([height, 0]);
+            // Draw highlight circle
+            svg.append('circle')
+                .attr('cx', xScale(5))
+                .attr('cy', yScale(5))
+                .attr('r', 40)
+                .attr('stroke', 'orange')
+                .attr('fill', 'none')
+                .attr('stroke-width', 3);
+            // White box background for annotation
+            const boxX = xScale(5) - 290 - 40; // left of the bubble
+            const boxY = yScale(5) - 28;
+            const boxWidth = 290;
+            const boxHeight = 75;
+            svg.append('rect')
+                .attr('x', boxX - 10)
+                .attr('y', boxY - 8)
+                .attr('width', boxWidth)
+                .attr('height', boxHeight)
+                .attr('fill', 'white')
+                .attr('stroke', 'orange')
+                .attr('stroke-width', 2)
+                .attr('rx', 8);
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 12)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('Younger respondents may enjoy schedule ');
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 32)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('flexibility but still feel isolated — highlighting ');
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 52)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('generational differences in social dynamics.');
+            annotationArea.html('Most responses are centered around moderate scores (3,3). There is a slight age-related trend — older respondents cluster more at low work-life balance or high isolation extremes.');
+            return;
         } else if (step === 4) {
-            topText = 'Scene 3, Step 4 annotation.';
+            const xScale = d3.scaleLinear().domain([0, 5]).range([0, width]);
+            const yScale = d3.scaleLinear().domain([0, 5]).range([height, 0]);
+            // Draw highlight circle
+            svg.append('circle')
+                .attr('cx', xScale(3))
+                .attr('cy', yScale(3))
+                .attr('r', 40)
+                .attr('stroke', 'orange')
+                .attr('fill', 'none')
+                .attr('stroke-width', 3);
+            // White box background for annotation
+            const boxX = xScale(3) + 70;
+            const boxY = yScale(3) - 28;
+            const boxWidth = 270;
+            const boxHeight = 75;
+            svg.append('rect')
+                .attr('x', boxX - 10)
+                .attr('y', boxY - 8)
+                .attr('width', boxWidth)
+                .attr('height', boxHeight)
+                .attr('fill', 'white')
+                .attr('stroke', 'orange')
+                .attr('stroke-width', 2)
+                .attr('rx', 8);
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 12)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('Most workers fall in the middle range, ');
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 32)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('suggesting moderate satisfaction and ');
+            svg.append('text')
+                .attr('x', boxX)
+                .attr('y', boxY + 52)
+                .attr('font-size', 14)
+                .attr('fill', 'orange')
+                .text('connection across age groups');
+            annotationArea.html('Most responses are centered around moderate scores (3,3). There is a slight age-related trend — older respondents cluster more at low work-life balance or high isolation extremes.');
+            return;
         }
         annotationArea.html(topText);
     });
@@ -995,7 +1223,7 @@ function drawScatterPlotByHours(container, annotationArea, step) {
         // Top annotation/callout logic by step
         let topText = '';
         if (step === 1) {
-            topText = 'Scene 4 annotation.';
+            topText = 'Most clusters again fall near the center (3,2–3), with fairly uniform red-purple coloring, indicating little variation in hours worked across different experiences of isolation and balance. There is no strong correlation between extreme isolation/balance and average working hours. The average number of hours per week seems relatively consistent (around 50) across all clusters.';
         }
         annotationArea.html(topText);
     });
@@ -1010,21 +1238,36 @@ function drawJitteredScatterplot(container, annotationArea) {
 
     // Add filter controls
     container.html('');
-    const controlsDiv = container.append('div').attr('class', 'explore-controls').style('margin-bottom', '12px');
-    controlsDiv.append('label').text('Gender: ');
-    const genderSelect = controlsDiv.append('select').attr('id', 'explore-gender');
-    controlsDiv.append('label').text(' Region: ');
-    const regionSelect = controlsDiv.append('select').attr('id', 'explore-region');
-    controlsDiv.append('label').text(' Income: ');
-    const incomeSelect = controlsDiv.append('select').attr('id', 'explore-income');
-    controlsDiv.append('label').text(' Age: ');
-    const ageMin = controlsDiv.append('input').attr('type', 'number').attr('id', 'explore-age-min').attr('placeholder', 'min').style('width', '60px');
-    controlsDiv.append('span').text(' - ');
-    const ageMax = controlsDiv.append('input').attr('type', 'number').attr('id', 'explore-age-max').attr('placeholder', 'max').style('width', '60px');
-    controlsDiv.append('label').text(' Hours/Week: ');
-    const hoursMin = controlsDiv.append('input').attr('type', 'number').attr('id', 'explore-hours-min').attr('placeholder', 'min').style('width', '60px');
-    controlsDiv.append('span').text(' - ');
-    const hoursMax = controlsDiv.append('input').attr('type', 'number').attr('id', 'explore-hours-max').attr('placeholder', 'max').style('width', '60px');
+    const controlsDiv = container.append('div').attr('class', 'explore-controls').style('margin-bottom', '20px');
+    
+    // Gender filter
+    const genderDiv = controlsDiv.append('div').style('margin-bottom', '8px');
+    genderDiv.append('label').text('Gender: ').style('display', 'inline-block').style('width', '100px');
+    const genderSelect = genderDiv.append('select').attr('id', 'explore-gender');
+    
+    // Region filter
+    const regionDiv = controlsDiv.append('div').style('margin-bottom', '8px');
+    regionDiv.append('label').text('Region: ').style('display', 'inline-block').style('width', '100px');
+    const regionSelect = regionDiv.append('select').attr('id', 'explore-region');
+    
+    // Income filter
+    const incomeDiv = controlsDiv.append('div').style('margin-bottom', '8px');
+    incomeDiv.append('label').text('Income: ').style('display', 'inline-block').style('width', '100px');
+    const incomeSelect = incomeDiv.append('select').attr('id', 'explore-income');
+    
+    // Age filter
+    const ageDiv = controlsDiv.append('div').style('margin-bottom', '8px');
+    ageDiv.append('label').text('Age: ').style('display', 'inline-block').style('width', '100px');
+    const ageMin = ageDiv.append('input').attr('type', 'number').attr('id', 'explore-age-min').attr('placeholder', 'min').style('width', '60px');
+    ageDiv.append('span').text(' - ');
+    const ageMax = ageDiv.append('input').attr('type', 'number').attr('id', 'explore-age-max').attr('placeholder', 'max').style('width', '60px');
+    
+    // Hours filter
+    const hoursDiv = controlsDiv.append('div').style('margin-bottom', '8px');
+    hoursDiv.append('label').text('Hours/Week: ').style('display', 'inline-block').style('width', '100px');
+    const hoursMin = hoursDiv.append('input').attr('type', 'number').attr('id', 'explore-hours-min').attr('placeholder', 'min').style('width', '60px');
+    hoursDiv.append('span').text(' - ');
+    const hoursMax = hoursDiv.append('input').attr('type', 'number').attr('id', 'explore-hours-max').attr('placeholder', 'max').style('width', '60px');
     const svg = container.append('svg')
         .attr('width', svgWidth)
         .attr('height', svgHeight)

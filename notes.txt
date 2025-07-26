@@ -2,18 +2,19 @@ Each circle represents a group of people with the same work-life balance and soc
 
 Average income shows little variation across work-life balance and social isolation levels. This suggests that compensation may not be directly linked to well-being in hybrid work environments.
 
-	3,3: Most responses cluster here  
+	3,3: Most responses, regardless of income, cluster here with moderate balance and moderate isolation. 
 → Moderate balance, moderate isolation  
 → Avg. income in this group is around $X
 
 	5,1 Ideal zone: High balance & low isolation  
-→ Fewer respondents land here  
+→ Fewer respondents land here in the ideal zone with high balance and low isolation. This could possibly be linked to hybrid work setups.
 → Possibly linked to hybrid work setups
 → average income: 
 
 1, 5 Red flag zone: Poor work-life balance  
 → High social isolation and low work-life balance
 → average income: 
+Few respondents lie in the red flag zone with poor work life balance and high isolation. Their average income is similar to others.
 
 Color shading shows little gender disparity in overall well-being. Both men and women appear similarly distributed across work-life balance and social isolation scores.
 
@@ -21,7 +22,7 @@ Color shading shows little gender disparity in overall well-being. Both men and 
 
 	Smaller clusters in the upper left show fewer respondents facing both low work-life balance and high social isolation — no strong gender trend here
 
-The lower-right bubbles suggest a segment of workers with excellent balance and minimal isolation. Gender distribution here is also mixed, indicating both men and women experience this positively
+	The lower-right bubbles suggest a segment of workers with excellent balance and minimal isolation. Gender distribution here is also mixed, indicating both men and women experience this positively
 
 Most responses are centered around moderate scores (3,3). There is a slight age-related trend — older respondents cluster more at low work-life balance or high isolation extremes.
 
